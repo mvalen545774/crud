@@ -1,13 +1,25 @@
 <?php
-<?php
-include "config.php";
 
-$full_name = $_POST['full_name'];
-$age = $_POST['last_name'];
+require 'config.php';
 
+if (isset($_POST['add'])) {
 
-$stmt = $conn->prepare("INSERT INTO customers (full_name, last_name) VALUES (?,?)");
-$stmt->execute([$first_name, $last_name]);
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $product = $_POST['product'];
+    $amount = $_POST['amount'];
 
-header("Location: customers.php");
+    $stmt = $pdo->prepare("INSERT INTO users (name, email) VALUES (?, ?)");
+    $stmt->execute([$name, $email]);
+
+    $users_id = $pdo->lastInsertId();
+
+    $stmt = $pdo->prepare("INSERT INTO orders (users_id, product, amount) VALUES (?, ?, ?)");
+    $stmt->execute([$users_id, $product, $amount]);
+
+    header("Location: landing.php");
+
+    echo "User and Order added succesfully";
+    exit();
+}
 ?>
